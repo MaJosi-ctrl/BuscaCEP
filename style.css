@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Anaheim:wght@400..800&display=swap');
+
+h1 {
+    font-family: "Anaheim";
+
+    color: #215e91;
+}
+
+body {
+    background-color: #a3caea;
+}
+
+
+#loadingOverlay {
+    /* As linhas abaixo garantem que o elemento ocupe 100% do espaço da tela */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Fundo branco semi-transparente */
+    background-color: rgba(231, 245, 255, 0.8);
+    /* Posiciona o spiner acima de todos os outros elementos HTML */
+    z-index: 9999;
+}
+
+.spinner-border {
+    /* Aumenta o temanho do spiner */
+    width: 100px;
+    height: 100px;
+}
