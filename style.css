@@ -2,13 +2,33 @@
 
 h1 {
     font-family: "Anaheim";
-
-    color: #215e91;
+    
+    color: #305168;
 }
 
 body {
-    background-color: #a3caea;
+    background-color: #6596b8
 }
+.row {
+    color: #aec8da  
+} 
+input[type="text"] {
+    background-color: #92b5cd;
+    border-color: #4e85ab;
+    box-shadow: 0 1px 0 1px #3b799a inset, 0 0 8px #3b799a;
+    outline: 0 none;
+}
+input[type="text"]::placeholder {
+    color: #487a9da4;
+}
+
+input[type="text"], select {
+    background-color:  #aec8da !important;
+    border-color: #4e85ab !important;
+    color: rgb(73, 121, 153) !important;
+    box-shadow: 0 1px 0 1px #3b799a inset, 0 0 8px #3b799a;
+    outline: 0 none;
+} 
 
 
 #loadingOverlay {
@@ -25,7 +45,7 @@ body {
 }
 
 .spinner-border {
-    /* Aumenta o temanho do spiner */
+    /* Aumenta o tamanho do spiner */
     width: 100px;
     height: 100px;
 }
