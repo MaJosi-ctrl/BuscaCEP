@@ -7,7 +7,12 @@ const txt_rua = document.querySelector("#rua");
 const txt_num = document.querySelector("#numero");
 const txt_cidade = document.querySelector("#cidade");
 const txt_bairro = document.querySelector("#bairro");
+const txt_complemento = document.querySelector("#complemento");
 const slt_estado = document.querySelector("#estado");
+
+
+const err_cep = document.querySelector("#cep-erro");
+
 
 const loadingOverlay = document.querySelector("#loadingOverlay");
 
@@ -16,6 +21,9 @@ const loadingOverlay = document.querySelector("#loadingOverlay");
 //--------------------------------------------------------------------------
 
 function consultaCEP() {
+    
+    limpaCampos(); 
+    
     // Lê o CEP digitado no campo "CEP" da página
     // para variavel 'cep'
     let cep = txt_cep.value
@@ -32,70 +40,84 @@ function consultaCEP() {
         
         // remove o "-" (traço) da variável 'cep'.
         cep = cep.replace("-", "");
-
-        limpaCampos();
+        
+        
         
         // Exibe o spiner de 'Carregando' antes de chamar a API.
         loadingOverlay.classList.add('d-flex');
         loadingOverlay.classList.remove('d-none');
         
-        fetch('https://viacep.com.br/ws/'+cep+'/json/')
-        .then(function(response) {
+            
+            fetch('https://viacep.com.br/ws/'+cep+'/json/')
+            .then(function(response) {
+                // Oculta o spiner de 'Carregando' ao receber a resposta da API.
+                loadingOverlay.classList.add('d-none');
+                loadingOverlay.classList.remove('d-flex');
+                
+                // Converte a resposta para JSON.
+                return response.json(); 
+            })
+            .then(function(jsonResponse) {
+                // Exibe a resposta da API na Console do navegador Web.
+                console.log(jsonResponse);
+                
+                // A API da ViaCEP retorna a chave 'erro' quando o CEP
+                // digitado é invalido.
+                if(jsonResponse.erro) {
+                    console.log("CEP inválido!");
+                    // Exibe a mensagem de "CEP inválido!" abaixo de CEP.
+                    txt_cep.classList.add("is-invalid");
+                } else {
+                    // Remove a mensagem de "CEP invalido!" abaixo do campo de CEP (se existir).
+                    txt_cep.classList.remove("is-invalid");
+                    // Preenche os campos de texto com as informaçõesretornadas pela API.
+                    if (jsonResponse.logradouro !== "") {
+                        txt_rua.value = jsonResponse.logradouro;
+                        txt_rua.disabled = true;
+                    }
+                    if (jsonResponse.localidade !== "") {
+                        txt_cidade.value = jsonResponse.localidade;
+                        txt_cidade.disabled = true;
+                    }
+                    if (jsonResponse.bairro !== "") {
+                        txt_bairro.value = jsonResponse.bairro;
+                        txt_bairro.disabled = true;
+                    }
+                    if (jsonResponse.uf !== "") {
+                        slt_estado.value = jsonResponse.uf;
+                        slt_estado.disabled = true;
+                    }      
+                }
+                
+            }) 
+        .catch (error => {
             // Oculta o spiner de 'Carregando' ao receber a resposta da API.
             loadingOverlay.classList.add('d-none');
             loadingOverlay.classList.remove('d-flex');
             
-            // Converte a resposta para JSON.
-            return response.json(); 
-        })
-        .then(function(jsonResponse) {
-            // Exibe a resposta da API na Console do navegador Web.
-            console.log(jsonResponse);
-            
-            // A API da ViaCEP retorna a chave 'erro' quando o CEP
-            // digitado é invalido.
-            if(jsonResponse.erro) {
-                console.log("CEP inválido!");
-                // Exibe a mensagem de "CEP inválido!" abaixo de CEP.
-                txt_cep.classList.add("is-invalid");
-            } else {
-                // Remove a mensagem de "CEP invalido!" abaixo do campo de CEP (se existir).
-                txt_cep.classList.remove("is-invalid");
-                // Preenche os campos de texto com as informaçõesretornadas pela API.
-                if (jsonResponse.logradouro !== "") {
-                    txt_rua.value = jsonResponse.logradouro;
-                    txt_rua.disabled = true;
-                }
-                if (jsonResponse.localidade !== "") {
-                    txt_cidade.value = jsonResponse.localidade;
-                    txt_cidade.disabled = true;
-                }
-                if (jsonResponse.bairro !== "") {
-                    txt_bairro.value = jsonResponse.bairro;
-                    txt_bairro.disabled = true;
-                }
-                if (jsonResponse.uf !== "") {
-                    slt_estado.value = jsonResponse.uf;
-                    slt_estado.disabled = true;
-                }      
-            }
-        });      
+            err_cep.innerHTML = "Falha na consulta ao CEP .\
+                                 <a href='#' onclick='consultaCEP()'>Tentar novamente?</a>";
+            txt_cep.classList.add("is-invalid");
+        });
     }
 }
+
 function limpaCampos() {
     /* Limpa os valores atuais dos campos */
     txt_rua.value = "";
+    txt_num.value = "";
     txt_cidade.value = "";
     txt_bairro.value = "";
+    txt_complemento.value = "";
     slt_estado.value = "";
-    txt_num.value = "";
-
+    
+    
     /* Reabilita os campos que por ventura possam ter sido desabilitados */
-     txt_rua.disabled = false;
+    txt_rua.disabled = false;
     txt_cidade.disabled = false;
     txt_bairro.disabled = false;
     slt_estado.disabled = false;
-
+    
 }
 
 //--------------------------------------------------------------------------
